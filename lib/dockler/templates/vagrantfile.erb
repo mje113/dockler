@@ -1,0 +1,21 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box     = 'raring'
+  config.vm.box_url = 'http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box'
+  config.vm.provision :shell, inline: <<-BASH
+apt-get update
+apt-get -y install linux-image-extra-`uname -r`
+apt-get -y install software-properties-common
+add-apt-repository ppa:dotcloud/lxc-docker
+apt-get update
+apt-get -y install lxc-docker
+BASH
+
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ['modifyvm', :id, '--memory', '512']
+  end
+
+end
