@@ -1,0 +1,11 @@
+apt-get update
+apt-get -y install linux-image-extra-`uname -r`
+apt-get -y install software-properties-common
+add-apt-repository ppa:dotcloud/lxc-docker
+apt-get update
+apt-get -y install lxc-docker
+
+mkdir railsapp
+cp -R /vagrant railsapp/app
+
+docker build -t mje113/testapp railsapp

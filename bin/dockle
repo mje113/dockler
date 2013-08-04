@@ -3,5 +3,24 @@
 lib = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
+require 'log4r'
 require 'dockler'
-Dockler.run
+
+
+Signal.trap('INT') { Dockler.cleanup; exit 1 }
+
+logger = Log4r::Logger.new('dockler::bin::dockler')
+logger.info("`dockler` invoked: #{ARGV.inspect}")
+
+$stdout.sync = true
+$stderr.sync = true
+
+begin
+  Dockler.run
+  exit 0
+rescue Dockler::Errors::DocklerError => e
+  logger.error('Dockler experienced an error! Details:')
+  logger.error(e.inspect)
+  logger.error(e.message)
+  logger.error(e.backtrace.join("\n"))
+end
